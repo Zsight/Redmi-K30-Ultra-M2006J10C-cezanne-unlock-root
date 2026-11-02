@@ -1,0 +1,29 @@
+# Private firmware and device-specific backups
+firmware/downloads/*
+firmware/extracted/*
+firmware/device_backups/*
+boot_analysis/*.img
+lk_analysis/*.img
+private/
+backups/
+
+# Downloaded tools and binaries
+*.apk
+*.exe
+*.dll
+*.bin
+platform-tools/
+tools/
+
+# Raw device logs and screenshots
+logs/*
+screenshots/
+*.png
+
+# Python and editor noise
+__pycache__/
+*.pyc
+.venv/
+.idea/
+.vscode/
+
