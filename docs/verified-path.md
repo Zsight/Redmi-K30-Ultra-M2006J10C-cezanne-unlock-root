@@ -75,6 +75,10 @@ The checked result in the Windows device registry was:
 Service=WinUSB
 ```
 
+The complete driver-selection procedure, target-device checks, installer
+button choices, recovery, and common failure modes are in
+[`zadig-win-usb.md`](zadig-win-usb.md).
+
 ## 4. Enter BROM
 
 The working sequence was:

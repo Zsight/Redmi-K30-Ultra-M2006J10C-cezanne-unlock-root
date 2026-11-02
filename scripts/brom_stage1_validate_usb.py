@@ -15,25 +15,46 @@ from pathlib import Path
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-PYDEPS = PROJECT_ROOT / "tools" / "mtkclient_pydeps"
-MTK_ROOT = PROJECT_ROOT / "tools" / "research" / "mtkclient"
+MTK_ROOT = Path(
+    os.environ.get(
+        "MTKCLIENT_ROOT",
+        str(PROJECT_ROOT / "tools" / "research" / "mtkclient"),
+    )
+).expanduser().resolve()
+PYDEPS = Path(
+    os.environ.get(
+        "MTKCLIENT_PYDEPS",
+        str(PROJECT_ROOT / "tools" / "mtkclient_pydeps"),
+    )
+).expanduser().resolve()
 WINDOWS_USB = MTK_ROOT / "mtkclient" / "Windows"
 PAYLOAD_PATH = MTK_ROOT / "mtkclient" / "payloads" / "mt6885_payload.bin"
+
+if not MTK_ROOT.is_dir():
+    raise SystemExit(
+        "mtkclient not found. Set MTKCLIENT_ROOT or clone it to "
+        f"{PROJECT_ROOT / 'tools' / 'research' / 'mtkclient'}"
+    )
 
 for dependency_path in (PYDEPS, MTK_ROOT):
     dependency_text = str(dependency_path)
     if dependency_text not in sys.path:
         sys.path.insert(0, dependency_text)
 
-if os.name == "nt":
+if os.name == "nt" and WINDOWS_USB.is_dir():
     os.environ["PATH"] = f"{WINDOWS_USB};{os.environ.get('PATH', '')}"
     if hasattr(os, "add_dll_directory"):
         os.add_dll_directory(str(WINDOWS_USB))
 
-from mtkclient.Library.Exploit.kamakiri import Kamakiri  # noqa: E402
-from mtkclient.Library.Exploit.kamakiri2 import Kamakiri2  # noqa: E402
-from mtkclient.Library.mtk_class import Mtk  # noqa: E402
-from mtkclient.config.mtk_config import MtkConfig  # noqa: E402
+try:
+    from mtkclient.Library.Exploit.kamakiri import Kamakiri  # noqa: E402
+    from mtkclient.Library.Exploit.kamakiri2 import Kamakiri2  # noqa: E402
+    from mtkclient.Library.mtk_class import Mtk  # noqa: E402
+    from mtkclient.config.mtk_config import MtkConfig  # noqa: E402
+except ImportError as exc:
+    raise SystemExit(
+        f"mtkclient Python dependencies are not importable: {exc}"
+    ) from exc
 
 
 EXPECTED_HWCODE = 0x0816
@@ -55,6 +76,8 @@ def log(message: str) -> None:
 
 
 def load_payload() -> bytes:
+    if not PAYLOAD_PATH.is_file():
+        raise RuntimeError(f"mt6885 payload not found: {PAYLOAD_PATH}")
     payload = PAYLOAD_PATH.read_bytes()
     digest = hashlib.sha256(payload).hexdigest().upper()
     log(f"payload_path={PAYLOAD_PATH}")

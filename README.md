@@ -50,9 +50,12 @@ Root: MagiskSU 31.1, uid=0(root)
 ## 目录
 
 - [`docs/quick-start.md`](docs/quick-start.md) — 从下载到完成只读基线。
+- [`docs/full-workflow.md`](docs/full-workflow.md) — 从电脑、手机到 Root 的完整阶段流程。
 - [`docs/compatibility.md`](docs/compatibility.md) — 严格兼容范围。
 - [`docs/environment-windows.md`](docs/environment-windows.md) — 电脑与手机准备。
 - [`docs/download-firmware.md`](docs/download-firmware.md) — 官方固件元数据和校验。
+- [`docs/zadig-win-usb.md`](docs/zadig-win-usb.md) — 只给 0E8D:0003 绑定 WinUSB 的详细步骤。
+- [`docs/toolchain.md`](docs/toolchain.md) — 版本、目录和官方工具来源。
 - [`docs/codex-workspace.md`](docs/codex-workspace.md) — 如何把目录交给 Codex/CLI。
 - [`docs/verified-path.md`](docs/verified-path.md) — 实际成功的完整技术路径。
 - [`docs/failure-notes.md`](docs/failure-notes.md) — 已经排除的错误路线。

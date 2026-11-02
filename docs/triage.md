@@ -4,7 +4,7 @@
 |---|---|---|
 | Fastboot reports `unlocked: no` and `oem lks = 1` | LK lock state is still not 3; ordinary Fastboot unlock needs a signed token | Stop. Do not issue repeated unlock commands. Verify `seccfg` and the research path first. |
 | `adb reboot edl` succeeds but no `0E8D:0003` appears | This platform did not expose BROM from that reboot reason | Do not assume EDL succeeded. Use the verified physical BROM entry method or stop. |
-| BROM appears as COM7 but mtkclient cannot open it | Windows bound `0E8D:0003` to `usbser`; Kamakiri needs a WinUSB/libusb path | Bind only `USB\VID_0E8D&PID_0003` to WinUSB. Do not change unrelated devices. |
+| BROM appears as COM7 but mtkclient cannot open it | Windows bound `0E8D:0003` to `usbser`; Kamakiri needs a WinUSB/libusb path | Follow [`zadig-win-usb.md`](zadig-win-usb.md) and bind only `USB\VID_0E8D&PID_0003` to WinUSB. |
 | `fastboot boot patched.img` disconnects during `Booting` | This implementation rejected or reset the temporary boot path | No partition was written. Do not repeat blindly; use persistent flashing only with a validated image and explicit recovery plan. |
 | Stage1 reports `Done sending payload` but no ACK | The Kamakiri variant did not execute; an ACK is mandatory | Do not continue to DA. Try only a source-supported variant such as the verified `Kamakiri2` path after review. |
 | `A1A2A3A4` ACK appears and the second handshake succeeds | Stage1 reached its patched command handler | Proceed only with the next explicitly scoped operation. |

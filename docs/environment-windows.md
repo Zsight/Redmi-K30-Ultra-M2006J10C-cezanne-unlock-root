@@ -14,8 +14,8 @@
 - 64-bit Python 3.11 for the analysis scripts.
 - Git for version control.
 - The reviewed `mtkclient` source and its Python dependencies for DA/BROM work.
-- Zadig/libwdi only for narrow BROM WinUSB binding as described in the verified
-  path.
+- Zadig/libwdi only for narrow BROM WinUSB binding; follow
+  [`zadig-win-usb.md`](zadig-win-usb.md).
 
 Record tool versions and hashes before running device commands.
 
@@ -44,4 +44,8 @@ Android/Fastboot VID or unrelated Bluetooth, camera, mouse, or hub devices.
 
 The result must show state `device`, not `unauthorized`, before any command
 is issued.
+
+For the physical BROM and WinUSB sequence, see
+[`zadig-win-usb.md`](zadig-win-usb.md). Do not begin DA work until the
+control-transfer probe succeeds.
 

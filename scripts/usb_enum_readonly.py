@@ -22,12 +22,17 @@ for dependency_path in (PYDEPS, CAPSTONE, MTK_ROOT):
     if dependency_text not in sys.path:
         sys.path.insert(0, dependency_text)
 
-if os.name == "nt" and hasattr(os, "add_dll_directory"):
+if os.name == "nt" and WINDOWS_USB.is_dir() and hasattr(os, "add_dll_directory"):
     os.add_dll_directory(str(WINDOWS_USB))
 
-import usb.core  # noqa: E402
-import usb.backend.libusb0  # noqa: E402
-import usb.backend.libusb1  # noqa: E402
+try:
+    import usb.core  # noqa: E402
+    import usb.backend.libusb0  # noqa: E402
+    import usb.backend.libusb1  # noqa: E402
+except ImportError as exc:
+    print(f"ERROR=pyusb is not installed: {exc}")
+    print("Install it with: python -m pip install pyusb")
+    raise SystemExit(2) from exc
 
 
 class LibusbVersion(ctypes.Structure):
@@ -65,9 +70,12 @@ def main() -> int:
     print(f"pyusb_path={Path(usb.__file__).resolve()}")
     print(f"libusb_dll={dll_path.resolve()} exists={dll_path.exists()}")
 
-    backend = usb.backend.libusb1.get_backend(
-        find_library=lambda _name: str(dll_path)
-    )
+    if dll_path.exists():
+        backend = usb.backend.libusb1.get_backend(
+            find_library=lambda _name: str(dll_path)
+        )
+    else:
+        backend = usb.backend.libusb1.get_backend()
     print(f"libusb1_backend_loaded={backend is not None}")
     if backend is None:
         print("ERROR=libusb1 backend could not be loaded")

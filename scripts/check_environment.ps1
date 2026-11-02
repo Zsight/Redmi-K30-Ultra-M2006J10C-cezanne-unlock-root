@@ -5,6 +5,13 @@ $ErrorActionPreference = 'Continue'
 $root = Split-Path -Parent $PSScriptRoot
 $adb = Join-Path $root 'platform-tools\adb.exe'
 $fastboot = Join-Path $root 'platform-tools\fastboot.exe'
+$mtkRoot = if ($env:MTKCLIENT_ROOT) {
+    [System.IO.Path]::GetFullPath($env:MTKCLIENT_ROOT)
+}
+else {
+    Join-Path $root 'tools\research\mtkclient'
+}
+$payload = Join-Path $mtkRoot 'mtkclient\payloads\mt6885_payload.bin'
 
 function Show-Check {
     param([string]$Name, [bool]$Ok, [string]$Detail = '')
@@ -16,12 +23,16 @@ Show-Check 'Windows' ($env:OS -eq 'Windows_NT') $env:OS
 Show-Check '64-bit PowerShell' ([Environment]::Is64BitProcess)
 Show-Check 'adb.exe' (Test-Path -LiteralPath $adb) $adb
 Show-Check 'fastboot.exe' (Test-Path -LiteralPath $fastboot) $fastboot
+Show-Check 'mtkclient root' (Test-Path -LiteralPath $mtkRoot) $mtkRoot
+Show-Check 'mt6885 payload' (Test-Path -LiteralPath $payload) $payload
 
 $python = Get-Command python.exe -ErrorAction SilentlyContinue
 Show-Check 'Python' ($null -ne $python) $(if ($python) { $python.Source } else { '' })
 if ($python) {
     $version = & python.exe --version 2>&1
     Write-Output "Python version: $version"
+    & python.exe -c "import usb, serial" 2>$null
+    Show-Check 'pyusb + pyserial' ($LASTEXITCODE -eq 0)
 }
 
 $git = Get-Command git.exe -ErrorAction SilentlyContinue

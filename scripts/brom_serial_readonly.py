@@ -22,8 +22,13 @@ PYDEPS = PROJECT_ROOT / "tools" / "mtkclient_pydeps"
 if str(PYDEPS) not in sys.path:
     sys.path.insert(0, str(PYDEPS))
 
-import serial  # noqa: E402
-import serial.tools.list_ports  # noqa: E402
+try:
+    import serial  # noqa: E402
+    import serial.tools.list_ports  # noqa: E402
+except ImportError as exc:
+    print(f"ERROR=pyserial is not installed: {exc}")
+    print("Install it with: python -m pip install pyserial")
+    raise SystemExit(2) from exc
 
 
 BROM_VID = 0x0E8D
